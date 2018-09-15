@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 1.这里的namespace一定要和对应mapper接口的类路径相同，这样的目的为了区分不同类的同一个方法 -->
+<mapper namespace="cn.xiaozou.mapper.UserMapper">
+	
+	<!-- 
+		1.xml属性详解：
+			1.id即当前语句的Id,一定要和Mapper的方法名一样
+			2.parameterType：输入参数类型,基本数据类型都配置了别名，所以可以简写，反之不可以
+			3.resultType:输出参数类型
+			4.#{}	相当于占位符?	这个占位符在执行的时候时会加""号的，可以防止sql注入
+			  ${}	也是占位符		这个占位符在执行的时候不会加""，不可以放在sql注入
+			  总结：建议多使用上者
+			5.parameterMap:作废，基本上不用
+			6.resultMap:在数据库中字段和实体类属性不一致时使用
+	 -->
+	<!--根据id查找用户 -->
+	<select id="selectUserById" parameterType="Integer" 
+		resultType="cn.xiaozou.entity.User">
+		select * from user where id=#{id}
+	</select>
+
+	<!-- 
+		2.xml详解：
+			1.keyProperty:实体属性
+			2.keyColumn:数据库对应字段
+			3.order:获取id的时机，一般来说如果时自增长就是AFTER，如果是uuid就是BEFORE
+			4.为了在没有提交事务之前就获取用户id可以下使用sql的LAST_INSERT_ID方法
+	 -->
+	<!-- 增加用户 -->
+	<insert id="insertUser" parameterType="cn.xiaozou.entity.User">
+		<!-- 为了执行增加用户操作后（还没提交事务时），就获取当前 用户的id -->
+		<selectKey keyProperty="id" order="AFTER" keyColumn="id"
+			resultType="Integer">
+			select LAST_INSERT_ID();
+		</selectKey>
+		insert into user(id,username,sex,birthday,address)
+		values(#{id},#{username},#{sex},#{birthday},#{address})
+	</insert>
+	
+	<!-- 根据用户名进行模糊查询 -->
+	<select id="selectUserByName" parameterType="String" resultType="cn.xiaozou.entity.User">
+		select * from user where username like "%"#{username}"%"
+	</select>
+	
+	<update id="updateUser" parameterType="cn.xiaozou.entity.User">
+		update user set username=#{username},sex=#{sex} where id=#{id}
+	</update>
+	
+	<delete id="deleteUser" parameterType="cn.xiaozou.entity.User">
+		delete from user where id=#{id}
+	</delete>
+	
+	
+</mapper>

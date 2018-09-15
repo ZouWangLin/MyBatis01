@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 3.引入外部的propeties -->
+	<!-- <properties resource="db.properties"/> -->
+	
+	<!-- 4.给一个包定义别名 -->
+	<typeAliases>
+		<package name="cn.xiaozou.entity"/>
+	</typeAliases>
+	
+	<!-- 1.连接数据库的操作 -->
+	<!-- 和spring整合后 environments配置将废除 -->
+	<environments default="development">
+		<environment id="development">
+			<!-- 使用jdbc事务管理 -->
+			<transactionManager type="JDBC" />
+			<!-- 数据库连接池 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url"
+					value="jdbc:mysql://localhost:3306/mybatis32?characterEncoding=utf-8" />
+				<property name="username" value="root" />
+				<property name="password" value="root" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<!-- 2.加载指定包下的所有mapper.xml文件 -->
+	<mappers>
+		<package name="cn.xiaozou.mapper" />
+	</mappers>
+	
+	
+	
+</configuration>
